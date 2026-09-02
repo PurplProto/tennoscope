@@ -2726,6 +2726,9 @@ pub fn run() {
     // more than having one.
     #[cfg(target_os = "linux")]
     if std::env::var_os("DISPLAY").is_some() {
+        // WebKitGTK's DMA-BUF path fails to allocate surfaces on some NVIDIA/KDE combinations;
+        // the X11 renderer remains compatible with the XWayland overlay and avoids that GBM path.
+        let _ = gtk::glib::setenv("WEBKIT_DISABLE_DMABUF_RENDERER", "1", true);
         gtk::gdk::set_allowed_backends("x11");
     }
     tauri::Builder::default()
